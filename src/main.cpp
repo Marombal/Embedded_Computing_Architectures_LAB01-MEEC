@@ -24,6 +24,8 @@ int K;
 
 int mod2, mod3;
 
+int last_state;
+
 unsigned long interval_LED;
 
 fsm_t fsm[10];
@@ -60,6 +62,7 @@ void setup() {
 
   mod2 = 1;
   mod3 = 0;
+  last_state = 0;
   
   for(int i = 0; i < K; i++) LED[i] = 0;
 }
@@ -103,7 +106,7 @@ void loop() {
       fsm[0].state_new = 2;
     }
     else if((fsm[0].state == 1) && S1 && !prevS1){
-      fsm[0].state_new = 0;
+      fsm[0].state_new = 6;
     }
     else if((fsm[0].state == 1) && fsm[0].tis > interval_LED){
       fsm[0].state_new = 1;
@@ -125,7 +128,7 @@ void loop() {
       fsm[0].state_new = 3;
     }
     else if((fsm[0].state == 2) && S1 && !prevS1){
-      fsm[0].state_new = 0;
+      fsm[0].state_new = 6;
     }
     else if((fsm[0].state == 3) && S2 && !prevS2){
       flag = 1;
@@ -135,10 +138,27 @@ void loop() {
       fsm[0].state_new = 2;
     }
     else if((fsm[0].state == 3) && S1 && !prevS1){
-      fsm[0].state_new = 0;
+      fsm[0].state_new = 6;
     }
     else if((fsm[0].state == 4) && S1 && !prevS1){
+      fsm[0].state_new = 6;
+    }
+    else if((fsm[0].state == 6) && !S1 && prevS1 && fsm[0].tis < 3000){
       fsm[0].state_new = 0;
+    }
+    else if((fsm[0].state == 6) && !S1 && prevS1 && fsm[0].tis >= 3000){
+      fsm[0].state_new = last_state;
+    }
+    /*WARNING*/
+    else if((fsm[0].state == 5) && (fsm[1].state == 0)){ 
+      fsm[0].state_new = last_state;
+    }
+    else if(fsm[1].state == 2){
+      fsm[0].state_new = 5;
+    }
+
+    if((fsm[0].state != 5) && (fsm[0].state != 6)){
+      last_state = fsm[0].state; // last_state -> guarda o estado em que ficou :)
     }
 
     // State Machine 5 Process (DoubleClick)
@@ -215,7 +235,6 @@ void loop() {
       fsm[2].state_new = 1;
     }
     else if((fsm[2].state == 3) && S2 && !prevS2){
-      // WARNING
       mod3 = !mod3;
       fsm[2].state_new = 3;
     }
@@ -388,7 +407,10 @@ void loop() {
       LEDp = 0;
     }
     else if(fsm[0].state == 4){
-      //LEDp = 1; //WARNING
+      //LEDp = 1; 
+    }
+    else if(fsm[0].state == 5){
+      for(int i = 0; i < 6; i++) LED[i] = 0;
     }
 
     // Actions that FSM5 states trigger
