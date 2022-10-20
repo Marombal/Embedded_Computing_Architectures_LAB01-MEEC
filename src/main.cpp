@@ -28,6 +28,10 @@ int last_state;
 
 unsigned long interval_LED;
 
+int fade = 255; // [0; 255]
+
+//intervlo
+
 fsm_t fsm[10];
 
 unsigned long interval, loop_micros, last_cycle;
@@ -351,7 +355,7 @@ void loop() {
     else if((fsm[9].state == 2) && fsm[0].state != 1){
       fsm[9].state_new = 0;
     }
-    else if((fsm[9].state == 2) && fsm[9].tis >= 500){
+    else if((fsm[9].state == 2) && fsm[9].tis >= 100){
       fsm[9].state_new = 3;
     }
     else if((fsm[9].state == 2) && flag_K == 1){
@@ -361,7 +365,7 @@ void loop() {
     else if((fsm[9].state == 3) && fsm[0].state != 1){
       fsm[9].state_new = 0;
     }
-    else if((fsm[9].state == 3) && fsm[9].tis >= 500){
+    else if((fsm[9].state == 3) && fsm[9].tis >= 100){
       fsm[9].state_new = 2;
     }
     else if((fsm[9].state == 3) && flag_K){
@@ -484,6 +488,71 @@ void loop() {
     digitalWrite(LED4, LED[2]);
     digitalWrite(LED5, LED[1]);
     digitalWrite(LED6, LED[0]);
+
+    /*
+      switch (K){
+        case 5:
+          analogWrite(LED1, LED[5]*fade/interval_LED*(interval_LED - fsm[0].tis));
+          digitalWrite(LED2, LED[4]);
+          digitalWrite(LED3, LED[3]);
+          digitalWrite(LED4, LED[2]);
+          digitalWrite(LED5, LED[1]);
+          digitalWrite(LED6, LED[0]);
+          break; 
+        case 4:
+          digitalWrite(LED1, LED[5]);
+          analogWrite(LED2, LED[4]*fade/interval_LED*(interval_LED - fsm[0].tis));
+          digitalWrite(LED3, LED[3]);
+          digitalWrite(LED4, LED[2]);
+          digitalWrite(LED5, LED[1]);
+          digitalWrite(LED6, LED[0]);
+          break; 
+        case 3:
+          digitalWrite(LED1, LED[5]);
+          digitalWrite(LED2, LED[4]);
+          analogWrite(LED3, LED[3]*fade/interval_LED*(interval_LED - fsm[0].tis));
+          digitalWrite(LED4, LED[2]);
+          digitalWrite(LED5, LED[1]);
+          digitalWrite(LED6, LED[0]);
+          break; 
+        case 2:
+          digitalWrite(LED1, LED[5]);
+          digitalWrite(LED2, LED[4]);
+          digitalWrite(LED3, LED[3]);
+          analogWrite(LED4, LED[2]*fade/interval_LED*(interval_LED - fsm[0].tis));
+          digitalWrite(LED5, LED[1]);
+          digitalWrite(LED6, LED[0]);
+          break; 
+        case 1:
+          digitalWrite(LED1, LED[5]);
+          digitalWrite(LED2, LED[4]);
+          digitalWrite(LED3, LED[3]);
+          digitalWrite(LED4, LED[2]);
+          analogWrite(LED5, LED[1]*fade/interval_LED*(interval_LED - fsm[0].tis));
+          digitalWrite(LED6, LED[0]);
+          break; 
+        case 0:
+          digitalWrite(LED1, LED[5]);
+          digitalWrite(LED2, LED[4]);
+          digitalWrite(LED3, LED[3]);
+          digitalWrite(LED4, LED[2]);
+          digitalWrite(LED5, LED[1]);
+          analogWrite(LED6, LED[0]*fade/interval_LED*(interval_LED - fsm[0].tis));
+          break;
+      }
+      analogWrite(LED1, LED[5]*fade);
+      analogWrite(LED2, LED[4]*fade);
+      analogWrite(LED3, LED[3]*fade);
+      analogWrite(LED4, LED[2]*fade);
+      analogWrite(LED5, LED[1]*fade);
+      analogWrite(LED6, LED[0]*fade);
+      // fade * 
+      //interval - 255
+      //tempo atual - x
+      //x = ta * 255 / interval      
+    */
+
+
     digitalWrite(LED7, LEDp);
 
     /*
@@ -500,8 +569,9 @@ void loop() {
     Serial.println(fsm[9].state);
     */
     
-    Serial.print("S1: "); Serial.println(S1);
-    Serial.print("S2: "); Serial.println(S2);
+    Serial.print("S1: "); Serial.print(S1); Serial.print(" mod2: "); Serial.println(mod2); 
+    Serial.print("S2: "); Serial.print(S2); Serial.print(" mod3: "); Serial.println(mod3); 
+    Serial.print("interval_LED: "); Serial.println(interval_LED);
     //Serial.println("LED1-LED2-LED3-LED4-LED5-LED6-LEDp "); Serial.print(LED[5]);Serial.print(LED[4]);Serial.print(LED[3]);Serial.print(LED[2]);Serial.print(LED[1]);Serial.println(LED[0]);
     Serial.print("Machine 0 state: "); Serial.println(fsm[0].state);
     Serial.print("Machine 5 state: "); Serial.println(fsm[5].state);
