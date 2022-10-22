@@ -114,7 +114,13 @@ void loop() {
     else if((fsm[0].state == 1) && S2 && !prevS2){
       save_tis = fsm[0].tis;
       save_tes = fsm[0].tes;
+      fsm[0].state_new = 7;
+    }
+    else if((fsm[0].state == 7) && fsm[0].tis > 500){
       fsm[0].state_new = 2;
+    }
+    else if((fsm[0].state == 7) && S2 && !prevS2){
+      fsm[0].state_new = 1;
     }
     else if((fsm[0].state == 1) && S1 && !prevS1){
       fsm[0].state_new = 6;
@@ -124,7 +130,7 @@ void loop() {
       fsm[0].tis = 0;
       fsm[0].tes = millis();
       save_tis = 0;
-      Serial.print("K--");
+      //Serial.print("K--");
       K--;
       flag_K = 1;
     }
@@ -196,7 +202,7 @@ void loop() {
     else if((fsm[1].state == 1) && !S1 && prevS1 && fsm[1].tis < 3000){
       fsm[1].state_new = 0;
     }
-    else if((fsm[1].state == 1) && !S1 && prevS1 && fsm[1].tis >= 3000){
+    else if((fsm[1].state == 1) &&  fsm[1].tis >= 3000){
       fsm[1].state_new = 2;
     }
     else if((fsm[1].state == 2) && S1 && !prevS1){
@@ -205,7 +211,7 @@ void loop() {
     else if((fsm[1].state == 3) && !S1 && prevS1 && fsm[1].tis < 3000){
       fsm[1].state_new = 2;
     }
-    else if((fsm[1].state == 3) && !S1 && prevS1 && fsm[1].tis >= 3000){
+    else if((fsm[1].state == 3) &&  fsm[1].tis >= 3000){
       fsm[1].state_new = 0;
     }
 
@@ -261,13 +267,13 @@ void loop() {
     if((fsm[3].state == 0) && fsm[2].state == 1){
       fsm[3].state_new = 1;
     }
-    else if((fsm[3].state == 1) && fsm[3].tis > 500){
+    else if((fsm[3].state == 1) && fsm[3].tis >= 500){
       fsm[3].state_new = 2;
     }
     else if((fsm[3].state == 1) && fsm[2].state != 1){
       fsm[3].state_new = 0;
     }
-    else if((fsm[3].state == 2) && fsm[3].tis > 500){
+    else if((fsm[3].state == 2) && fsm[3].tis >= 500){
       fsm[3].state_new = 1;
     }
     else if((fsm[3].state == 2) && fsm[2].state != 1){
@@ -277,13 +283,13 @@ void loop() {
     if((fsm[4].state == 0) && fsm[2].state == 2){
       fsm[4].state_new = 1;
     }
-    else if((fsm[4].state == 1) && fsm[4].tis > 500){
+    else if((fsm[4].state == 1) && fsm[4].tis >= 500){
       fsm[4].state_new = 2;
     }
     else if((fsm[4].state == 1) && fsm[2].state != 2){
       fsm[4].state_new = 0;
     }
-    else if((fsm[4].state == 2) && fsm[4].tis > 500){
+    else if((fsm[4].state == 2) && fsm[4].tis >= 500){
       fsm[4].state_new = 1;
     }
     else if((fsm[4].state == 2) && fsm[2].state != 2){
@@ -293,13 +299,13 @@ void loop() {
     if((fsm[6].state == 0) && fsm[2].state == 3){
       fsm[6].state_new = 1;
     }
-    else if((fsm[6].state == 1) && fsm[6].tis > 500){
+    else if((fsm[6].state == 1) && fsm[6].tis >= 500){
       fsm[6].state_new = 2;
     }
     else if((fsm[6].state == 1) && fsm[2].state != 3){
       fsm[6].state_new = 0;
     }
-    else if((fsm[6].state == 2) && fsm[6].tis > 500){
+    else if((fsm[6].state == 2) && fsm[6].tis >= 500){
       fsm[6].state_new = 1;
     }
     else if((fsm[6].state == 2) && fsm[2].state != 3){
@@ -353,9 +359,11 @@ void loop() {
     if((fsm[9].state == 0) && fsm[0].state == 1 && mod2 == 2){
       fsm[9].state_new = 1;
     }
+    /* Warning
     else if((fsm[9].state == 1) && fsm[0].state == 1 && mod2 == 3){
       fsm[9].state_new = 4;
     }
+    */
     else if((fsm[9].state == 1) && fsm[0].state != 1){
       fsm[9].state_new = 0;
     }
@@ -378,13 +386,16 @@ void loop() {
     else if((fsm[9].state == 3) && fsm[9].tis >= 100){
       fsm[9].state_new = 2;
     }
-    else if((fsm[9].state == 3) && flag_K){
+    else if((fsm[9].state == 3) && flag_K == 1){
       flag_K = 0;
       fsm[9].state_new = 1;
     }
+
+    /* Warning
     else if((fsm[9].state == 4) && fsm[0].state != 1){
       fsm[9].state_new = 0;
     }
+    */
 
     // State Machine 10 Process (Present the current interval on LED7 aka LEDp)
     if((fsm[10].state == 0) && fsm[2].state == 2){
@@ -580,7 +591,7 @@ void loop() {
     else if(fsm[9].state == 3){
       LED[K-1] = 0;
     }
-    else if(fsm[9].state == 4){}
+    //warning else if(fsm[9].state == 4){}
     // Actions that FSM10 states trigger
     if(fsm[10].state == 0){
       ledp_fade = 0;
@@ -615,6 +626,7 @@ void loop() {
       LEDp = 0;
       ledp_fade = 0;
     }
+    
     // Actions that FSM10 states trigger
     if(fsm[11].state == 0){}
     else if(fsm[11].state == 1){}
@@ -630,79 +642,54 @@ void loop() {
 
 
     // Set the outputs
-    /*
-    digitalWrite(LED1, LED[5]);
-    digitalWrite(LED2, LED[4]);
-    digitalWrite(LED3, LED[3]);
-    digitalWrite(LED4, LED[2]);
-    digitalWrite(LED5, LED[1]);
-    digitalWrite(LED6, LED[0]);
-    digitalWrite(LED7, LEDp);
-    */
-
-
-    //analogWrite(LED1, LED[5]*255*(interval_LED-fsm[0].tis)/interval_LED);
-    //analogWrite(LED2, LED[4]*255*(interval_LED-fsm[0].tis)/interval_LED);
-    //analogWrite(LED3, LED[3]*255*(interval_LED-fsm[0].tis)/interval_LED);
-    //analogWrite(LED4, LED[2]*255*(interval_LED-fsm[0].tis)/interval_LED);
-    //analogWrite(LED5, LED[1]*255*(interval_LED-fsm[0].tis)/interval_LED);
-    //analogWrite(LED6, LED[0]*255*(interval_LED-fsm[0].tis)/interval_LED);
-
     if((mod2 == 3) && (fsm[5].state == 0) && (fsm[0].state == 1)){
-      Serial.println("sadasdasdasd NESTE IF");
       if(K - 1 == 5){
         analogWrite(LED1, LED[5]*255*(interval_LED-fsm[0].tis)/interval_LED);
-        digitalWrite(LED2, LED[4]);
-        digitalWrite(LED3, LED[3]);
-        digitalWrite(LED4, LED[2]);
-        digitalWrite(LED5, LED[1]);
-        digitalWrite(LED6, LED[0]);
-        //digitalWrite(LED7, LEDp);
+        analogWrite(LED2, 255*LED[4]);
+        analogWrite(LED3, 255*LED[3]);
+        analogWrite(LED4, 255*LED[2]);
+        analogWrite(LED5, 255*LED[1]);
+        analogWrite(LED6, 255*LED[0]);
       }
       else if(K-1 == 4){
-        digitalWrite(LED1, LED[5]);
+        analogWrite(LED1, 255*LED[5]);
         analogWrite(LED2, LED[4]*255*(interval_LED-fsm[0].tis)/interval_LED);
-        digitalWrite(LED3, LED[3]);
-        digitalWrite(LED4, LED[2]);
-        digitalWrite(LED5, LED[1]);
-        digitalWrite(LED6, LED[0]);
-        //digitalWrite(LED7, LEDp);
+        analogWrite(LED3, 255*LED[3]);
+        analogWrite(LED4, 255*LED[2]);
+        analogWrite(LED5, 255*LED[1]);
+        analogWrite(LED6, 255*LED[0]);
       }
       else if(K-1==3){
-        digitalWrite(LED1, LED[5]);
-        digitalWrite(LED2, LED[4]);
+        analogWrite(LED1, 255*LED[5]);
+        analogWrite(LED2, 255*LED[4]);
         analogWrite(LED3, LED[3]*255*(interval_LED-fsm[0].tis)/interval_LED);
-        digitalWrite(LED4, LED[2]);
-        digitalWrite(LED5, LED[1]);
-        digitalWrite(LED6, LED[0]);
-        //digitalWrite(LED7, LEDp);        
+        analogWrite(LED4, 255*LED[2]);
+        analogWrite(LED5, 255*LED[1]);
+        analogWrite(LED6, 255*LED[0]);        
       }
       else if(K-1 == 2){
-        digitalWrite(LED1, LED[5]);
-        digitalWrite(LED2, LED[4]);
-        digitalWrite(LED3, LED[3]);
+        analogWrite(LED1, 255*LED[5]);
+        analogWrite(LED2, 255*LED[4]);
+        analogWrite(LED3, 255*LED[3]);
         analogWrite(LED4, LED[2]*255*(interval_LED-fsm[0].tis)/interval_LED);
-        digitalWrite(LED5, LED[1]);
-        digitalWrite(LED6, LED[0]);
-        //digitalWrite(LED7, LEDp);        
+        analogWrite(LED5, 255*LED[1]);
+        analogWrite(LED6, 255*LED[0]);      
       }
       else if(K-1 == 1){
-        digitalWrite(LED1, LED[5]);
-        digitalWrite(LED2, LED[4]);
-        digitalWrite(LED3, LED[3]);
-        digitalWrite(LED4, LED[2]);
+        analogWrite(LED1, 255*LED[5]);
+        analogWrite(LED2, 255*LED[4]);
+        analogWrite(LED3, 255*LED[3]);
+        analogWrite(LED4, 255*LED[2]);
         analogWrite(LED5, LED[1]*255*(interval_LED-fsm[0].tis)/interval_LED);
-        digitalWrite(LED6, LED[0]);
-        //digitalWrite(LED7, LEDp);        
+        analogWrite(LED6, 255*LED[0]);        
       }
       else if(K-1 == 0){
-        digitalWrite(LED1, LED[5]);
-        digitalWrite(LED2, LED[4]);
-        digitalWrite(LED3, LED[3]);
-        digitalWrite(LED4, LED[2]);
-        digitalWrite(LED5, LED[1]);
+        analogWrite(LED1, 255*LED[5]);
+        analogWrite(LED2, 255*LED[4]);
+        analogWrite(LED3, 255*LED[3]);
+        analogWrite(LED4, 255*LED[2]);
+        analogWrite(LED5, 255*LED[1]);
         analogWrite(LED6, LED[0]*255*(interval_LED-fsm[0].tis)/interval_LED);
-        //digitalWrite(LED7, LEDp);
       }
     }
     if((mod2 != 3) || (fsm[5].state != 0) || (fsm[0].state != 1)){
@@ -713,7 +700,6 @@ void loop() {
       analogWrite(LED4, 255*LED[2]);
       analogWrite(LED5, 255*LED[1]);
       analogWrite(LED6, 255*LED[0]);
-      //analogWrite(LED7, 255*LEDp);
     }
 
     if(ledp_fade == 0) analogWrite(LED7, LEDp* 255);
@@ -739,7 +725,5 @@ void loop() {
     Serial.print("Machine 11 state: "); Serial.println(fsm[11].state);
 
     Serial.println();
-    //Serial.println(fsm[1].tis);
-    //Serial.print(K);
   }
 }
