@@ -90,6 +90,8 @@ void loop() {
     S1 = !digitalRead(S1_pin);
     S2 = !digitalRead(S2_pin);
 
+
+    //time management
     unsigned long cur_time = millis(); // Only call millis once
     fsm[0].tis = cur_time - fsm[0].tes;
     if(fsm[0].state == 1){
@@ -642,7 +644,7 @@ void loop() {
 
 
     // Set the outputs
-    if((mod2 == 3) && (fsm[5].state == 0) && (fsm[0].state == 1)){
+    if((mod2 == 3) && (fsm[0].state == 1)){
       if(K - 1 == 5){
         analogWrite(LED1, LED[5]*255*(interval_LED-fsm[0].tis)/interval_LED);
         analogWrite(LED2, 255*LED[4]);
@@ -692,8 +694,7 @@ void loop() {
         analogWrite(LED6, LED[0]*255*(interval_LED-fsm[0].tis)/interval_LED);
       }
     }
-    if((mod2 != 3) || (fsm[5].state != 0) || (fsm[0].state != 1)){
-      Serial.println("ESTOU NESTE IF");
+    if((mod2 != 3) || (fsm[0].state != 1)){
       analogWrite(LED1, 255*LED[5]);
       analogWrite(LED2, 255*LED[4]);
       analogWrite(LED3, 255*LED[3]);
@@ -710,7 +711,7 @@ void loop() {
     Serial.print("S1: "); Serial.print(S1); Serial.print(" mod2: "); Serial.println(mod2); 
     Serial.print("S2: "); Serial.print(S2); Serial.print(" mod3: "); Serial.println(mod3); 
     Serial.print("interval_LED: "); Serial.println(interval_LED);
-    Serial.println("LED1-LED2-LED3-LED4-LED5-LED6-LEDp "); Serial.print(LED[5]);Serial.print(LED[4]);Serial.print(LED[3]);Serial.print(LED[2]);Serial.print(LED[1]);Serial.println(LED[0]);
+    Serial.println("LED1-LED2-LED3-LED4-LED5-LED6-LEDp "); Serial.print(LED[5]);Serial.print(LED[4]);Serial.print(LED[3]);Serial.print(LED[2]);Serial.print(LED[1]);Serial.println(LED[0]);Serial.print(LEDp);
     Serial.print("Machine 0 state: "); Serial.println(fsm[0].state);
     Serial.print("Machine 5 state: "); Serial.println(fsm[5].state);
     Serial.print("Machine 1 state: "); Serial.println(fsm[1].state);
